@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "999425391550",
+    "firebase_url": "https://proyecto-firebase-f470f.firebaseio.com",
+    "project_id": "proyecto-firebase-f470f",
+    "storage_bucket": "proyecto-firebase-f470f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999425391550:android:ed820ddabeffcf78",
+        "android_client_info": {
+          "package_name": "com.example.fchatapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "999425391550-d6ng8gpee3k1vemi2ut36qhflopdoghd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fchatapplication",
+            "certificate_hash": "77b033dccd4e89c411ddbd3c0ff3083e3d15d825"
+          }
+        },
+        {
+          "client_id": "999425391550-citanesgk185j2evk9hnu38mrqedbks0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVWkBNk9vDOkVKvgRbQbjMmMfroRsgbCs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "999425391550-citanesgk185j2evk9hnu38mrqedbks0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999425391550:android:182ecbf679a270bb",
+        "android_client_info": {
+          "package_name": "com.example.firebasechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "999425391550-h16d3beo2rttm620o0ofmko1gkmvmhp1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.firebasechat",
+            "certificate_hash": "51dbc1abec1767890682e90944cf6870a1c16e36"
+          }
+        },
+        {
+          "client_id": "999425391550-citanesgk185j2evk9hnu38mrqedbks0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVWkBNk9vDOkVKvgRbQbjMmMfroRsgbCs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "999425391550-citanesgk185j2evk9hnu38mrqedbks0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end"
+    android:layout_marginLeft="110dp"
+    android:gravity="end"
+    android:orientation="vertical">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        android:padding="10dp"
+        cardview:cardCornerRadius="20sp" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/txt_nombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Nombre"
+                android:textAlignment="viewEnd"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/mensajeMensaje"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:padding="2dp"
+                android:text="Hola bienvenido"
+                android:textAlignment="textStart"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/img_mensaje"
+                android:layout_width="wrap_content"
+                android:layout_height="182dp"
+                android:visibility="gone"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <Button
+                android:id="@+id/btnRepro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reproducir"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/horaMensaje"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginRight="2dp"
+                android:gravity="bottom"
+                android:text="04:47 p.m"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
+
+
