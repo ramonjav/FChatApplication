@@ -1,6 +1,5 @@
 package com.example.fchatapplication.Activitys;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.example.fchatapplication.Utilidades.Contantes.NODO_USUARIOS;
@@ -31,23 +31,29 @@ public class UsersActivity extends AppCompatActivity {
 
     List<User> users;
 
+    DatabaseReference reference;
+    FirebaseUser user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
 
+        reference = FirebaseDatabase.getInstance().getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
         recyclerView = findViewById(R.id.recycleUser);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager( new LinearLayoutManager(this));
 
         users = new ArrayList<>();
-        //showUsers();
-        showusers2();
+
+        showUsers();
 
     }
 
-    private void showUsers() {
+   /* private void showUsers() {
 
        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference(NODO_USUARIOS);
@@ -62,7 +68,7 @@ public class UsersActivity extends AppCompatActivity {
                         users.add(user);
                     }
                 }
-                adapter = new UserAdapter(UsersActivity.this, users);
+                adapter = new UserAdapter(UsersActivity.this, users, false);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -71,9 +77,9 @@ public class UsersActivity extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
 
-    private void showusers2(){
+    private void showUsers(){
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase.getInstance()
                 .getReference(NODO_USUARIOS)
@@ -88,7 +94,7 @@ public class UsersActivity extends AppCompatActivity {
                                 users.add(user);
                             }
                         }
-                        adapter = new UserAdapter(UsersActivity.this, users);
+                        adapter = new UserAdapter(UsersActivity.this, users, false);
                         recyclerView.setAdapter(adapter);
                     }
 
@@ -97,6 +103,29 @@ public class UsersActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    public void Status(boolean status){
+
+        reference = FirebaseDatabase.getInstance().getReference(NODO_USUARIOS).child(user.getUid());
+
+        HashMap<String, Object> Set = new HashMap<>();
+        Set.put("status", status);
+
+        reference.updateChildren(Set);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Status(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Status(false);
     }
 }
 

@@ -1,6 +1,8 @@
 package com.example.fchatapplication.Activitys;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -9,20 +11,26 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
+import com.example.fchatapplication.Adapters.MessageAdapter;
+import com.example.fchatapplication.Entidades.Chat;
 import com.example.fchatapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static com.example.fchatapplication.Utilidades.Contantes.KEY;
 import static com.example.fchatapplication.Utilidades.Contantes.NODO_MENSAJES;
+import static com.example.fchatapplication.Utilidades.Contantes.NODO_USUARIOS;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -33,6 +41,12 @@ public class MessageActivity extends AppCompatActivity {
     String id;
 
     FirebaseUser user;
+    DatabaseReference reference;
+
+    MessageAdapter adapter;
+    List<Chat> chats;
+
+    ValueEventListener seeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +60,8 @@ public class MessageActivity extends AppCompatActivity {
 
         id = bundle.getString(KEY);
 
-        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+        LinearLayoutManager l = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(l);
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -56,14 +71,11 @@ public class MessageActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-
                 if(!editText.getText().toString().trim().isEmpty()){
                     send.setVisibility(View.VISIBLE);
                 }else{
                     send.setVisibility(View.GONE);
                 }
-
             }
 
             @Override
@@ -82,18 +94,115 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        read(user.getUid(), id);
+        seeMensaje(id);
+    }
+
+    private void seeMensaje(final String userId){
+        reference = FirebaseDatabase.getInstance().getReference(NODO_MENSAJES);
+        seeListener = reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if(chat.getReciver().equals(user.getUid()) && chat.getSender().equals(userId)){
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("isseen", true);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void send(String sender, String reciver, String message){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Object createTimeStamp = ServerValue.TIMESTAMP;
 
-        HashMap<String, Object> mensaje = new HashMap<>();
-        mensaje.put("sender", sender);
-        mensaje.put("reciver", reciver);
-        mensaje.put("message", message);
+        String mGroupId = reference.push().getKey();
 
-        reference.child(NODO_MENSAJES).push().setValue(mensaje);
+        Chat chat = new Chat();
+        chat.setId(mGroupId);
+        chat.setReciver(reciver);
+        chat.setSender(sender);
+        chat.setMessage(message);
+        chat.setCreateTimeStamp(createTimeStamp);
+        chat.setIsseen(false);
 
+        reference.child(NODO_MENSAJES).child(mGroupId).setValue(chat);
+
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chatList")
+                .child(user.getUid())
+                .child(id);
+        chatRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    chatRef.child("id").setValue(id);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+   public void read(final String myid, final String userid){
+        chats = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference(NODO_MENSAJES);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                chats.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if(chat.getSender().equals(myid) && chat.getReciver().equals(userid) ||
+                    chat.getSender().equals(userid) && chat.getReciver().equals(myid)){
+                        chats.add(chat);
+                    }
+                }
+
+                adapter = new MessageAdapter(MessageActivity.this, chats);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void Status(boolean status){
+
+        reference = FirebaseDatabase.getInstance().getReference(NODO_USUARIOS).child(user.getUid());
+
+        HashMap<String, Object> Set = new HashMap<>();
+        Set.put("status", status);
+
+        reference.updateChildren(Set);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Status(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        reference.removeEventListener(seeListener);
+        Status(false);
     }
 }

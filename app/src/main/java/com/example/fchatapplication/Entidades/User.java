@@ -5,15 +5,18 @@ public class User {
     private  String id;
     private String Email;
     private String Name;
+    private boolean Status;
 
     public User() {
 
     }
 
-    public User(String id, String email, String name) {
+    public User(String id, String email, String name, boolean Status) {
         this.id = id;
-        Email = email;
-        Name = name;
+        this.Email = email;
+        this.Name = name;
+        this.Status = Status;
+
     }
 
     public String getEmail() {
@@ -38,5 +41,13 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean getStatus() {
+        return Status;
+    }
+
+    public void setStatus(boolean status) {
+        Status = status;
     }
 }

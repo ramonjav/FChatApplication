@@ -65,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         user.setId(currentUser.getUid());
                                         user.setEmail(correo);
                                         user.setName(nombre);
+                                        user.setStatus(false);
                                         //TODO: user.setToken(token);
 
                                         DatabaseReference reference = database.getReference("Usuarios/"+currentUser.getUid());

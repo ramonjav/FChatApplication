@@ -2,7 +2,6 @@ package com.example.fchatapplication.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.inputmethodservice.Keyboard;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +16,20 @@ import com.example.fchatapplication.R;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static com.example.fchatapplication.Utilidades.Contantes.KEY;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     Context context;
     List<User> Users;
+    private boolean isChat;
 
-    public UserAdapter(Context context, List<User> users){
+    public UserAdapter(Context context, List<User> users, boolean isChat){
         this.context = context;
         this.Users = users;
+        this.isChat = isChat;
     }
 
     @NonNull
@@ -41,6 +44,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final User user = Users.get(position);
         holder.name.setText(user.getName());
         holder.email.setText(user.getEmail());
+
+        if(isChat){
+            if(user.getStatus()){
+                holder.online.setVisibility(View.VISIBLE);
+                holder.offline.setVisibility(View.GONE);
+            }else{
+                holder.online.setVisibility(View.GONE);
+                holder.offline.setVisibility(View.VISIBLE);
+            }
+        }else{
+            holder.online.setVisibility(View.GONE);
+            holder.offline.setVisibility(View.GONE);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,12 +79,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView name, email;
+        CircleImageView online;
+        CircleImageView offline;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.txt_name);
             email = itemView.findViewById(R.id.txt_correo);
-
+            online = itemView.findViewById(R.id.online);
+            offline = itemView.findViewById(R.id.offline);
 
         }
     }

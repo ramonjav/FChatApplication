@@ -14,6 +14,27 @@
         app:civ_border_color="@color/common_google_signin_btn_text_dark_default"
         app:civ_border_width="2dp" />
 
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/online"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/online"
+        app:civ_border_color="@color/common_google_signin_btn_text_dark_default"
+        app:civ_border_width="2dp"
+        android:visibility="gone"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/offline"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/offline"
+        app:civ_border_color="@color/common_google_signin_btn_text_dark_default"
+        app:civ_border_width="2dp"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
