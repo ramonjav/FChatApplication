@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activitys.RegisterActivity" />
+        <activity android:name=".Activitys.FotoActivity"/>
     </application>
 
 </manifest>

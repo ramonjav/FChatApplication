@@ -12,6 +12,9 @@ public class Chat implements Serializable {
     private String id;
     private Object createTimeStamp;
     private boolean isseen;
+    private boolean isImage;
+    private String urlFoto;
+    private String NameFoto;
 
     public Chat() {
 
@@ -73,5 +76,29 @@ public class Chat implements Serializable {
 
     public void setIsseen(boolean isseen) {
         this.isseen = isseen;
+    }
+
+    public boolean isImage() {
+        return isImage;
+    }
+
+    public void setImage(boolean image) {
+        isImage = image;
+    }
+
+    public String getUrlFoto() {
+        return urlFoto;
+    }
+
+    public void setUrlFoto(String urlFoto) {
+        this.urlFoto = urlFoto;
+    }
+
+    public String getNameFoto() {
+        return NameFoto;
+    }
+
+    public void setNameFoto(String nameFoto) {
+        NameFoto = nameFoto;
     }
 }

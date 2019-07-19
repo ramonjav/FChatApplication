@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -64,6 +65,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }else{
             holder.visto.setVisibility(View.GONE);
         }
+
+        if(chat.isImage()){
+            holder.img_mensaje.setVisibility(View.VISIBLE);
+        }else{
+            holder.img_mensaje.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -87,12 +94,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView message, tiempo, visto;
+        ImageView img_mensaje;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             message = itemView.findViewById(R.id.mensajeMensaje);
             tiempo = itemView.findViewById(R.id.horaMensaje);
             visto = itemView.findViewById(R.id.txt_visto);
+            img_mensaje = itemView.findViewById(R.id.img_mensaje);
         }
     }
 }

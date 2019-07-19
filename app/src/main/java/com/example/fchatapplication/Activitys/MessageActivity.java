@@ -1,16 +1,24 @@
 package com.example.fchatapplication.Activitys;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.fchatapplication.Adapters.MessageAdapter;
 import com.example.fchatapplication.Entidades.Chat;
@@ -24,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,12 +40,15 @@ import java.util.List;
 import static com.example.fchatapplication.Utilidades.Contantes.KEY;
 import static com.example.fchatapplication.Utilidades.Contantes.NODO_MENSAJES;
 import static com.example.fchatapplication.Utilidades.Contantes.NODO_USUARIOS;
+import static com.example.fchatapplication.Utilidades.Contantes.UBIC;
+import static com.example.fchatapplication.Utilidades.Contantes.URI;
 
 public class MessageActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     Button send;
     EditText editText;
+    ImageButton imagen;
 
     String id;
 
@@ -48,6 +60,11 @@ public class MessageActivity extends AppCompatActivity {
 
     ValueEventListener seeListener;
 
+    final static int RESULTADO_GALERIA = 2;
+    //TODO: tomar de camara: final static int RESULTADO_CAMARA = 4;
+
+    private static String fichero = Environment.getExternalStorageDirectory().getAbsolutePath()+UBIC;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +72,7 @@ public class MessageActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rvMenssage);
         send = findViewById(R.id.btnEnviar);
         editText = findViewById(R.id.txtMensaje);
+        imagen = findViewById(R.id.btn_foto);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -86,11 +104,30 @@ public class MessageActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+        final File file = new File(fichero);
+
+        if(!file.exists()){
+            file.mkdirs();
+        }
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 send(user.getUid(), id, editText.getText().toString());
                 editText.setText("");
+            }
+        });
+
+        imagen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*Toast.makeText(MessageActivity.this,
+                        "    ／|＿＿＿＿＿＿＿＿＿ _ _\n" +
+                                "〈　 To BE CONTINUED…//// |\n" +
+                                "　＼|￣", Toast.LENGTH_SHORT).show();*/
+                Intent intent = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(Intent.createChooser(intent,"Selecciona una foto"), RESULTADO_GALERIA);
             }
         });
 
@@ -191,6 +228,46 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.updateChildren(Set);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        try{
+            if(requestCode == RESULTADO_GALERIA){
+                if(resultCode == Activity.RESULT_OK){
+                    ponerFoto(data.getDataString());
+                    Log.d("Ruta imagen", data.getDataString());
+                }else{
+                    Toast.makeText(MessageActivity.this,
+                            "La foto no se ha cargado",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+            }/*else if(requestCode == RESULTADO_CAMARA){
+
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                imageView.setImageBitmap(imageBitmap);
+                saveImage(imageBitmap);
+            }*/
+
+        }catch (Exception e){
+
+        }
+    }
+
+    public void ponerFoto(String uri){
+        if(uri != null && !uri.isEmpty() && !uri.equals("null")){
+            Intent i = new Intent(MessageActivity.this, FotoActivity.class);
+            i.putExtra(URI, uri);
+            i.putExtra(KEY, id);
+            startActivity(i);
+            /*try {
+                saveImage(MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+        }
     }
 
     @Override
