@@ -11,4 +11,10 @@ public class Contantes {
 
     public static final String URI = "uri";
     public static final String UBIC = "/Chat/Images/";
+
+    public static final String NOTIFICATION = "notification";
+    public static final String DATA = "data";
+    public static final String  BODY = "body";
+    public static final String TITLE = "title";
+    public static final String KEYUSER = "KeyUser";
 }

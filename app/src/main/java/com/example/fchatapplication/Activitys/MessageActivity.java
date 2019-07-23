@@ -91,9 +91,13 @@ public class MessageActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(!editText.getText().toString().trim().isEmpty()){
                     send.setVisibility(View.VISIBLE);
+                    imagen.setVisibility(View.GONE);
                 }else{
                     send.setVisibility(View.GONE);
+                    imagen.setVisibility(View.VISIBLE);
                 }
+
+                signos();
             }
 
             @Override
@@ -261,6 +265,26 @@ public class MessageActivity extends AppCompatActivity {
 
         }
     }
+
+    public  void signos(){
+
+        if(editText.getText().toString().trim().contains("?")){
+        }else if(editText.getText().toString().trim().contains("¿")) {
+            poner_signos("?");
+        }
+
+        if(editText.getText().toString().trim().contains("!")){
+        }else if(editText.getText().toString().trim().contains("¡")){
+            poner_signos("!");
+        }
+    }
+
+    public void poner_signos(String signo){
+        int posicion = editText.getSelectionEnd();
+        editText.setText(editText.getText().toString() + signo);
+        editText.setSelection(posicion);
+    }
+
 
     public void ponerFoto(String uri){
         if(uri != null && !uri.isEmpty() && !uri.equals("null")){

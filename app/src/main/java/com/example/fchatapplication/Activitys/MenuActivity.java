@@ -233,6 +233,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "Cerrando sesion", Toast.LENGTH_LONG).show();
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MenuActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            finish();
             return true;
         }
 
