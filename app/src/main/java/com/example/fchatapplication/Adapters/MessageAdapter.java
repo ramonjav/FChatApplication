@@ -1,6 +1,10 @@
 package com.example.fchatapplication.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +12,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.fchatapplication.Entidades.Chat;
 import com.example.fchatapplication.R;
 import com.example.fchatapplication.Utilidades.TraerFecha;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
+
+import static com.example.fchatapplication.Utilidades.Contantes.UBIC;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
@@ -27,11 +40,20 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     List<Chat> chats;
 
     FirebaseUser user;
+    private FirebaseStorage storage;
 
     public MessageAdapter(Context context, List<Chat> Chat){
         this.context = context;
         this.chats = Chat;
+        storage = FirebaseStorage.getInstance();
     }
+
+    public void actualizarmensaje(int position, Chat chat){
+        chats.set(position, chat);
+        notifyItemChanged(position);
+
+    }
+
 
     @NonNull
     @Override
@@ -46,7 +68,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MessageAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MessageAdapter.ViewHolder holder, final int position) {
 
         final Chat chat = chats.get(position);
 
@@ -68,6 +90,29 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         if(chat.isImage()){
             holder.img_mensaje.setVisibility(View.VISIBLE);
+            final String fichero = Environment.getExternalStorageDirectory().getAbsolutePath()+UBIC;
+            Glide.with(context).asBitmap().load(fichero + chat.getNameFoto()).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) { holder.img_mensaje.setImageBitmap(resource); }
+
+                @Override
+                public void onLoadFailed(@Nullable Drawable errorDrawable) {
+
+                    Glide.with(context).asBitmap().load(chat.getUrlFoto()).error(R.drawable.ic_launcher_background).into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            saveImage(resource, chat.getNameFoto(), fichero);
+                            storage.getReference().child("imagenes_chat").child(chat.getNameFoto()).delete();
+                            actualizarmensaje(position, chat);
+                            notifyItemInserted(position);
+                        }
+                    });
+                }
+            });
+
+            if(holder.message.getText().toString().trim().isEmpty()){
+                holder.message.setVisibility(View.GONE);
+            }
         }else{
             holder.img_mensaje.setVisibility(View.GONE);
         }
@@ -87,6 +132,25 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public int getItemCount() {
         return chats.size();
+    }
+
+    public void saveImage(Bitmap bitmap, String fileName, String fichero){
+
+        File file = new File(fichero, fileName);
+        if(!file.exists()){
+            Log.d("pathImage", file.toString());
+            FileOutputStream fos = null;
+            try{
+                fos = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.flush();
+                fos.close();
+                Log.d("pathImage", file.toString());
+            }catch (java.io.IOException e){
+                e.printStackTrace();
+            }
+        }
+        //Toast.makeText(c, file.toString(), Toast.LENGTH_SHORT).show();
     }
 
     //Holder de Usuarios

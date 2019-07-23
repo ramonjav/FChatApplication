@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.sax.StartElementListener;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        password = findViewById(R.id.PasswordLogin);
+        password = findViewById(R.id.NameRegister);
         email = findViewById(R.id.EmailLogin);
         aceptar = findViewById(R.id.aceptarLogin);
         registrar = findViewById(R.id.registerLogin);

@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:orientation="vertical"
+            android:background="@drawable/cardview2"
             android:padding="5dp">
 
             <TextView
@@ -51,6 +52,7 @@
                 android:id="@+id/img_mensaje"
                 android:layout_width="wrap_content"
                 android:layout_height="182dp"
+                android:adjustViewBounds="true"
                 android:visibility="gone"
                 tools:srcCompat="@tools:sample/avatars" />
 
@@ -69,7 +71,7 @@
                 android:layout_marginRight="2dp"
                 android:gravity="bottom"
                 android:text="04:47 p.m"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@android:color/background_light"
                 android:textSize="12sp" />
 
         </LinearLayout>

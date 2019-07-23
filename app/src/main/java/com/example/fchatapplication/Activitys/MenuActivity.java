@@ -1,6 +1,8 @@
 package com.example.fchatapplication.Activitys;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.example.fchatapplication.Adapters.UserAdapter;
@@ -9,9 +11,12 @@ import com.example.fchatapplication.Entidades.User;
 import com.example.fchatapplication.R;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
+import android.os.Environment;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
@@ -35,12 +40,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static com.example.fchatapplication.Utilidades.Contantes.NODO_MENSAJES;
 import static com.example.fchatapplication.Utilidades.Contantes.NODO_USUARIOS;
+import static com.example.fchatapplication.Utilidades.Contantes.UBIC;
 
 public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -54,9 +61,12 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     private List<String> usersList;
     NavigationView navigationView;
+
+    private static String fichero = Environment.getExternalStorageDirectory().getAbsolutePath()+UBIC;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_menu);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,9 +82,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         recyclerView = findViewById(R.id.rvUsers);
         LinearLayoutManager l = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(l);
-
         Fuser = FirebaseAuth.getInstance().getCurrentUser();
-
         usersList = new ArrayList<>();
 
         reference2 = FirebaseDatabase.getInstance().getReference(NODO_USUARIOS+"/"+Fuser.getUid());
@@ -97,6 +105,15 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
+
+        //checkPermission();
+        permisos();
+
+        final File file = new File(fichero);
+
+        if(!file.exists()){
+            file.mkdirs();
+        }
 
 
         reference = FirebaseDatabase.getInstance().getReference(NODO_MENSAJES);
@@ -245,5 +262,14 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    //pedir permisos para escribir y grabar audio
+    public void permisos() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, 1000);
+        }
     }
 }

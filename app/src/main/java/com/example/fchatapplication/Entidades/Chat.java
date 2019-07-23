@@ -20,13 +20,16 @@ public class Chat implements Serializable {
 
     }
 
-    public Chat(String sender, String reciver, String message, String id, boolean isseen) {
+    public Chat(String sender, String reciver, String message, String id, boolean isseen, boolean isImage, String urlFoto, String NameFoto) {
 
         this.sender = sender;
         this.reciver = reciver;
         this.message = message;
         this.id = id;
         this.isseen = isseen;
+        this.isImage = isImage;
+        this.urlFoto = urlFoto;
+        this.NameFoto = NameFoto;
         createTimeStamp = ServerValue.TIMESTAMP;
     }
 

@@ -20,6 +20,11 @@ import com.example.fchatapplication.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -30,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.example.fchatapplication.Utilidades.Contantes.KEY;
+import static com.example.fchatapplication.Utilidades.Contantes.NODO_MENSAJES;
 import static com.example.fchatapplication.Utilidades.Contantes.UBIC;
 import static com.example.fchatapplication.Utilidades.Contantes.URI;
 
@@ -42,6 +48,7 @@ public class FotoActivity extends AppCompatActivity {
 
     private FirebaseStorage storage;
     private StorageReference storageReference;
+    FirebaseUser user;
 
     Uri uri;
     int isvalided = 0;
@@ -66,6 +73,7 @@ public class FotoActivity extends AppCompatActivity {
         }else{finish();}
 
         storage = FirebaseStorage.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         final File file = new File(fichero);
 
@@ -79,7 +87,7 @@ public class FotoActivity extends AppCompatActivity {
                 isvalided++;
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 String fileName = "Image_" + timeStamp + ".jpg";
-                subirfoto(isvalided, fileName);
+                subirfoto(isvalided, fileName, user.getUid(), KEY_RECEPTOR, text.getText().toString());
                 finish();
                saveImage(((BitmapDrawable)imageView.getDrawable()).getBitmap(), fileName);
                // storage.getReference().child("imagenes_chat").child("40").delete();
@@ -87,7 +95,7 @@ public class FotoActivity extends AppCompatActivity {
         });
     }
 
-    public void subirfoto(int c, final String name){
+    public void subirfoto(int c, final String name, final String sender, final String reciver, final String message){
         if(c==1){
             storageReference = storage.getReference("imagenes_chat");//imagenes_chat
             final StorageReference fotoReferencia = storageReference.child(name);
@@ -103,18 +111,33 @@ public class FotoActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     String url = task.getResult().toString();
-                    EnviarMensaje(url, name);
+                    EnviarMensaje(url, name, sender, reciver, message);
                     finish();
                 }
             });
         }
     }
 
-    public void EnviarMensaje(String url, String name){
+    public void EnviarMensaje(String url, String name, String sender, String reciver, String message){
         if(!url.isEmpty()){
-            Chat chat = new Chat();
 
-            text.setText("");
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Object createTimeStamp = ServerValue.TIMESTAMP;
+
+            String mGroupId = reference.push().getKey();
+
+            Chat chat = new Chat();
+            chat.setId(mGroupId);
+            chat.setReciver(reciver);
+            chat.setSender(sender);
+            chat.setMessage(message);
+            chat.setCreateTimeStamp(createTimeStamp);
+            chat.setIsseen(false);
+            chat.setImage(true);
+            chat.setUrlFoto(url);
+            chat.setNameFoto(name);
+
+            reference.child(NODO_MENSAJES).child(mGroupId).setValue(chat);
         }
     }
 

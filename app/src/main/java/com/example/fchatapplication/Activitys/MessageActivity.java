@@ -154,6 +154,8 @@ public class MessageActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+
+
         });
 
     }
@@ -172,10 +174,13 @@ public class MessageActivity extends AppCompatActivity {
         chat.setMessage(message);
         chat.setCreateTimeStamp(createTimeStamp);
         chat.setIsseen(false);
+        chat.setImage(false);
+        chat.setUrlFoto("");
+        chat.setNameFoto("");
 
         reference.child(NODO_MENSAJES).child(mGroupId).setValue(chat);
 
-        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chatList")
+        /*final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chatList")
                 .child(user.getUid())
                 .child(id);
         chatRef.addValueEventListener(new ValueEventListener() {
@@ -190,7 +195,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
     }
 
    public void read(final String myid, final String userid){
@@ -210,6 +215,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 adapter = new MessageAdapter(MessageActivity.this, chats);
                 recyclerView.setAdapter(adapter);
+                recyclerView.scrollToPosition(adapter.getItemCount()-1);
             }
 
             @Override
@@ -268,6 +274,12 @@ public class MessageActivity extends AppCompatActivity {
                 e.printStackTrace();
             }*/
         }
+    }
+
+    private void setScrollbar(){
+
+        recyclerView.scrollToPosition(adapter.getItemCount()-1);
+
     }
 
     @Override

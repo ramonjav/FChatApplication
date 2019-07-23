@@ -18,8 +18,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/FondoMenu"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_menu"
-        app:menu="@menu/activity_menu_drawer" />
+        app:menu="@menu/activity_menu_drawer"
+        app:itemTextColor="@android:color/white"
+        app:itemIconTint="@android:color/white" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

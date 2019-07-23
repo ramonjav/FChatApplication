@@ -18,14 +18,17 @@
         android:layout_margin="5dp"
         android:orientation="vertical"
         android:padding="10dp"
-        cardview:cardCornerRadius="20sp" >
+        cardview:cardCornerRadius="20sp"
+        android:background="@drawable/cardview">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/cardview"
             android:gravity="start"
             android:orientation="vertical"
-            android:padding="5dp">
+
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/txt_nombre"
@@ -43,8 +46,9 @@
                 android:layout_gravity="left"
                 android:gravity="left"
                 android:padding="2dp"
-                android:text="Hola bienvenido"
+                android:text="Hola"
                 android:textAlignment="textStart"
+                android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:visibility="visible" />
 
@@ -52,6 +56,7 @@
                 android:id="@+id/img_mensaje"
                 android:layout_width="wrap_content"
                 android:layout_height="182dp"
+                android:adjustViewBounds="true"
                 android:visibility="gone"
                 tools:srcCompat="@tools:sample/avatars" />
 
@@ -69,8 +74,10 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginRight="2dp"
                 android:gravity="bottom"
-                android:text="04:47 p.m"
-                android:textSize="12sp" />
+                android:text="mommnets for now"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:visibility="visible" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -79,7 +86,8 @@
         android:id="@+id/txt_visto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Visto" />
+        android:text="Visto"
+        android:textColor="@color/common_google_signin_btn_text_dark_default" />
 
 </LinearLayout>
 
