@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.example.fchatapplication.Utilidades.Contantes.KEY;
+import static com.example.fchatapplication.Utilidades.Contantes.NODO_CHATLIST;
 import static com.example.fchatapplication.Utilidades.Contantes.NODO_MENSAJES;
 import static com.example.fchatapplication.Utilidades.Contantes.NODO_USUARIOS;
 import static com.example.fchatapplication.Utilidades.Contantes.UBIC;
@@ -184,7 +185,7 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.child(NODO_MENSAJES).child(mGroupId).setValue(chat);
 
-        /*final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chatList")
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference(NODO_CHATLIST)
                 .child(user.getUid())
                 .child(id);
         chatRef.addValueEventListener(new ValueEventListener() {
@@ -199,7 +200,8 @@ public class MessageActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });*/
+        });
+
     }
 
    public void read(final String myid, final String userid){

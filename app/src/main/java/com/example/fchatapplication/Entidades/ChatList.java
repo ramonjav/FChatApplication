@@ -2,13 +2,13 @@ package com.example.fchatapplication.Entidades;
 
 public class ChatList {
 
-    String id;
+    private String id;
+
+    public ChatList() {
+    }
 
     public ChatList(String id) {
         this.id = id;
-    }
-
-    public ChatList() {
     }
 
     public String getId() {

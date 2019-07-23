@@ -4,6 +4,7 @@ public class Contantes {
 
     public static final String NODO_USUARIOS = "Usuarios";
     public static final String NODO_MENSAJES = "Mensajes";
+    public static final String NODO_CHATLIST = "ChatList";
 
     public static final String KEY = "key";
 

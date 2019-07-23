@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.example.fchatapplication.Adapters.UserAdapter;
-import com.example.fchatapplication.Entidades.Chat;
+import com.example.fchatapplication.Entidades.ChatList;
 import com.example.fchatapplication.Entidades.User;
 import com.example.fchatapplication.R;
 
@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.example.fchatapplication.Utilidades.Contantes.NODO_MENSAJES;
+import static com.example.fchatapplication.Utilidades.Contantes.NODO_CHATLIST;
 import static com.example.fchatapplication.Utilidades.Contantes.NODO_USUARIOS;
 import static com.example.fchatapplication.Utilidades.Contantes.UBIC;
 
@@ -59,7 +59,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     DatabaseReference reference;
     DatabaseReference reference2;
 
-    private List<String> usersList;
+    private List<ChatList> usersList;
     NavigationView navigationView;
 
     private static String fichero = Environment.getExternalStorageDirectory().getAbsolutePath()+UBIC;
@@ -106,7 +106,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        //checkPermission();
         permisos();
 
         final File file = new File(fichero);
@@ -115,10 +114,28 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             file.mkdirs();
         }
 
-
-        reference = FirebaseDatabase.getInstance().getReference(NODO_MENSAJES);
         usersList = new ArrayList<>();
 
+        reference = FirebaseDatabase.getInstance().getReference(NODO_CHATLIST).child(Fuser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usersList.clear();
+                for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                    ChatList chatList = snapshot.getValue(ChatList.class);
+                    usersList.add(chatList);
+                }
+                chatlist();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        /*reference = FirebaseDatabase.getInstance().getReference(NODO_MENSAJES);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -132,7 +149,35 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                         usersList.add(chat.getSender());
                     }
                 }
-               read();
+               //read();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
+    }
+
+    public void chatlist(){
+        users = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference(NODO_USUARIOS);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                users.clear();
+                for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                    User user = snapshot.getValue(User.class);
+                    for(ChatList chatList: usersList){
+                        if(user.getId().equals(chatList.getId())){
+                            users.add(user);
+                        }
+                    }
+                }
+
+                adapter = new UserAdapter(MenuActivity.this, users, true);
+                recyclerView.setAdapter(adapter);
             }
 
             @Override
@@ -140,7 +185,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-
     }
 
     public void Status(boolean status){
@@ -172,7 +216,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         Status(false);
     }
 
-   public void read(){
+   /*public void read(){
 
         users = new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference(NODO_USUARIOS);
@@ -206,7 +250,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
